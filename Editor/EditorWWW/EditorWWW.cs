@@ -1,47 +1,53 @@
-﻿#if UNITY_EDITOR
-using System;
+﻿
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
+#if UNITY_EDITOR
+using System;
 
-[System.Serializable]
-public class EditorWWW : IDisposable
+#pragma warning disable 618
+
+namespace Cratesmith.Utils
 {
-    [Serializable]
-    public class WWWEvent : UnityEvent<WWW> {}
-
-    [SerializeField] private WWW m_www;
-    [SerializeField] private WWWEvent m_onComplete = new WWWEvent();
-    public WWW www {get { return m_www; }}
-
-    public EditorWWW()
+    [System.Serializable]
+    public class EditorWWW : IDisposable
     {
-    // so unity serializer can construct
-    }
+        [Serializable]
+        public class WWWEvent : UnityEvent<WWW> {}
 
-    public EditorWWW(string url, UnityAction<WWW> onComplete)
-    {
-        EditorApplication.update += Update;
-        m_onComplete.AddListener(onComplete);
-        m_www = new WWW(url);
-    }
+        [SerializeField] private WWW m_www;
+        [SerializeField] private WWWEvent m_onComplete = new WWWEvent();
+        public WWW www {get { return m_www; }}
 
-    private void Update()
-    {
-        if (!m_www.isDone) return;
-        m_onComplete.Invoke(m_www);
-        EditorApplication.update -= Update;
-    }
+        public EditorWWW()
+        {
+            // so unity serializer can construct
+        }
 
-    public void Stop()
-    {
-        EditorApplication.update -= Update;
-    }
+        public EditorWWW(string url, UnityAction<WWW> onComplete)
+        {
+            EditorApplication.update += Update;
+            m_onComplete.AddListener(onComplete);
+            m_www = new WWW(url);
+        }
 
-    public void Dispose()
-    {
-        Stop();
-        if (m_www != null) m_www.Dispose();
+        private void Update()
+        {
+            if (!m_www.isDone) return;
+            m_onComplete.Invoke(m_www);
+            EditorApplication.update -= Update;
+        }
+
+        public void Stop()
+        {
+            EditorApplication.update -= Update;
+        }
+
+        public void Dispose()
+        {
+            Stop();
+            if (m_www != null) m_www.Dispose();
+        }
     }
 }
 #endif

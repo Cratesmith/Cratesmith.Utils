@@ -2,21 +2,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-public abstract class PeerComponent<T> : MonoBehaviour
+namespace Cratesmith.Utils
 {
-    private T m_owner;
-    public T owner
+    public abstract class PeerComponent<T> : MonoBehaviour
     {
-        get
+        private T m_owner;
+        public T owner
         {
-            if (!isCached)
+            get
             {
-                m_owner = GetComponent<T>();
-                Assert.IsTrue(isCached, string.Format("Subcomponent<{0}> {1} does not have an owner!", typeof(T), name));
+                if (!isCached)
+                {
+                    m_owner = GetComponent<T>();
+                    Assert.IsTrue(isCached, string.Format("Subcomponent<{0}> {1} does not have an owner!", typeof(T), name));
+                }
+                return m_owner;
             }
-            return m_owner;
         }
-    }
 
-    private bool isCached { get { return !EqualityComparer<T>.Default.Equals(m_owner, default(T)); } }
+        private bool isCached { get { return !EqualityComparer<T>.Default.Equals(m_owner, default(T)); } }
+    }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Cratesmith.Utils;
 using NUnit.Framework;
 
 namespace Tests

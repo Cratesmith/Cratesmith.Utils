@@ -1,4 +1,4 @@
-﻿namespace Cratesmith
+﻿namespace Cratesmith.Utils
 {
     /// <summary>
     /// Interface for a state machine with an Id type for states. States must be class instances based on IState unique to this state machine

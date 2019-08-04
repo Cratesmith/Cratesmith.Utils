@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Cratesmith
+﻿namespace Cratesmith.Utils
 {
     /// <summary>
     /// Interface for a basic state machine. States must be class instances based on IState unique to this state machine

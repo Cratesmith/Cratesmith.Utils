@@ -1,11 +1,11 @@
 ﻿
 //#define VERIFY_LIST
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.Assertions;
 
-namespace Cratesmith
+namespace Cratesmith.Utils
 {
         public class PreallocLinkList<T> : ICollection<T>
     {

@@ -1,7 +1,4 @@
-using UnityEngine;
-using System.Collections;
-
-namespace Cratesmith
+namespace Cratesmith.Utils
 {
     public abstract class State<TState, TStateMachine> : IState<TState, TStateMachine>
         where TState : State<TState, TStateMachine> 

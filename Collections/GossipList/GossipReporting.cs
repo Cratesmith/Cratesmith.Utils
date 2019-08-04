@@ -1,50 +1,51 @@
-﻿using Cratesmith;
-
-public struct GossipReporting<TSelf> : IGossipContainer<TSelf>
+﻿namespace Cratesmith.Utils
 {
-    public GossipReporting(TSelf _self) : this()
+    public struct GossipReporting<TSelf> : IGossipContainer<TSelf>
     {
-        m_Self = _self;
-        m_PausedFor = new PreallocLinkList<object>();
-    }
-
-    public event System.Action<TSelf> OnChanged;
-
-    private PreallocLinkList<object> m_PausedFor;
-    private bool m_ChangePending;
-    private TSelf m_Self;
-    
-    public void Pause(object _pauseFor)
-    {
-        m_PausedFor.Add(_pauseFor);
-    }
-
-    public void Resume(object _resumeFor)
-    {
-        m_PausedFor.Remove(_resumeFor);
-        if (IsPaused || !m_ChangePending)
+        public GossipReporting(TSelf _self) : this()
         {
-            return;
+            m_Self = _self;
+            m_PausedFor = new PreallocLinkList<object>();
         }
 
-        m_ChangePending = false;
-        ++ChangeCount;
-        OnChanged?.Invoke(m_Self);
-    }
+        public event System.Action<TSelf> OnChanged;
 
-    public void MarkChanged()
-    {
-        if (!IsPaused)
+        private PreallocLinkList<object> m_PausedFor;
+        private bool m_ChangePending;
+        private TSelf m_Self;
+    
+        public void Pause(object _pauseFor)
         {
+            m_PausedFor.Add(_pauseFor);
+        }
+
+        public void Resume(object _resumeFor)
+        {
+            m_PausedFor.Remove(_resumeFor);
+            if (IsPaused || !m_ChangePending)
+            {
+                return;
+            }
+
+            m_ChangePending = false;
             ++ChangeCount;
             OnChanged?.Invoke(m_Self);
         }
-        else
-        {
-            m_ChangePending = true;
-        }
-    }
 
-    public bool IsPaused => m_PausedFor.Count > 0;
-    public long ChangeCount { get; private set; }
+        public void MarkChanged()
+        {
+            if (!IsPaused)
+            {
+                ++ChangeCount;
+                OnChanged?.Invoke(m_Self);
+            }
+            else
+            {
+                m_ChangePending = true;
+            }
+        }
+
+        public bool IsPaused => m_PausedFor.Count > 0;
+        public long ChangeCount { get; private set; }
+    }
 }

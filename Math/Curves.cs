@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Cratesmith
+namespace Cratesmith.Utils
 {
 	public static class Curves
 	{

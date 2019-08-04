@@ -1,4 +1,4 @@
-﻿namespace Cratesmith
+﻿namespace Cratesmith.Utils
 {
     public class StateMachine<TState, TStateMachine> : IStateMachine<TState, TStateMachine> 
         where TState : class, IState<TState, TStateMachine> 

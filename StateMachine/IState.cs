@@ -1,4 +1,4 @@
-﻿namespace Cratesmith
+﻿namespace Cratesmith.Utils
 {
     public interface IState
     {

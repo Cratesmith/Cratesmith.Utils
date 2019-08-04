@@ -1,9 +1,7 @@
 ﻿using System;
-using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 
-namespace Cratesmith
+namespace Cratesmith.Utils
 {
     // State machine with registered states
     public class StateMachineWithId<TState, TStateMachine, TStateId> : StateMachine<TState, TStateMachine>, IStateMachineWithId<TState, TStateId> 

@@ -33,7 +33,7 @@ namespace Cratesmith.Utils
 
                     userData = JsonUtility.FromJson<UserData>(importer.userData);
                 }
-                catch (ArgumentException e)
+                catch (ArgumentException)
                 {
                     Debug.LogWarning($"LinkedAssetMetas: {assetPath} meta file json data corrupt.");
                 }

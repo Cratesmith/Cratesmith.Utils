@@ -2,7 +2,7 @@
     "name": "Cratesmith.Utils.GossipList.Tests",
     "references": [
         "cratesmith.runtimeutils",
-        "GUID:29789a29d26807540a2d852a0df3b043"
+        "Cratesmith.Utils"
     ],
     "optionalUnityReferences": [
         "TestAssemblies"

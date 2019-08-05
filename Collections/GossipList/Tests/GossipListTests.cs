@@ -1,11 +1,9 @@
 ﻿using System;
-using Cratesmith;
-using Cratesmith.Utils;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools.Constraints;
 
-namespace Tests
+namespace Cratesmith.Utils.GossipList.Tests
 {
     public class GossipListTests
     {

@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using Cratesmith.Utils;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
-namespace Tests
+namespace Cratesmith.Utils.GossipList.Tests
 {
     public class GossipDictionaryTests
     {      

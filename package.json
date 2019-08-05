@@ -2,7 +2,7 @@
 	"name": "com.cratesmith.utils",
 	"displayName": "Cratesmith.Utils",
 	"description": "Shared code used by most other packages.",
-	"version": "0.0.1",
+	"version": "0.0.1-develop",
 	"unity": "2018.3",
 	"license": "MIT",
 	"repository": {

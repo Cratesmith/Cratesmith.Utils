@@ -1,7 +1,6 @@
 {
     "name": "Cratesmith.Utils.GossipList.Tests",
     "references": [
-        "cratesmith.runtimeutils",
         "Cratesmith.Utils"
     ],
     "optionalUnityReferences": [

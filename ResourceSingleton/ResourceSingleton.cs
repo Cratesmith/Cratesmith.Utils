@@ -164,17 +164,7 @@ namespace Cratesmith.Utils
     {
         static bool s_hasRun;
         private static Queue<Type> s_stepQueue;
-
-        //[InitializeOnLoadMethod]
-        //private static void DoStartup()
-        //{
-        //	if (!EditorApplication.isPlayingOrWillChangePlaymode && !BuildPipeline.isBuildingPlayer)
-        //	{
-        //		EditorPrefs.DeleteKey("ResourceSingletonBuilder.scriptsChanged");
-        //		BuildResourceSingletonsIfDirty();				
-        //	}
-        //}
-
+        
         public class Builder : UnityEditor.AssetPostprocessor
         {
             static void OnPostprocessAllAssets (string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths) 
@@ -188,7 +178,6 @@ namespace Cratesmith.Utils
             }
         }
 
-        //[DidReloadScripts(CallbackOrder.RESOURCE_SINGLETON)]
         [DidReloadScripts(-100)]
         public static void BuildResourceSingletonsIfDirty()
         {

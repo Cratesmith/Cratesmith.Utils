@@ -3,12 +3,14 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
+using UnityEngine;
+
 #if UNITY_EDITOR
 using System.Linq;
 using UnityEditor;
 using UnityEditor.Callbacks;
 #endif
-using UnityEngine;
 
 namespace Cratesmith.Utils
 {
@@ -160,46 +162,58 @@ namespace Cratesmith.Utils
 
     #region internal
 #if UNITY_EDITOR
-    public class ResourceSingletonBuilder : UnityEditor.AssetPostprocessor
+    public class ResourceSingletonBuilder : AssetPostprocessor
     {
-        static bool s_hasRun;
         private static Queue<Type> s_stepQueue;
         
-        public class Builder : UnityEditor.AssetPostprocessor
+        public class Builder : AssetPostprocessor
         {
-            static void OnPostprocessAllAssets (string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths) 
+            const string EDITORPREFS_KEY_ModifiedPaths = "ResourceSingleton.Builder.ModifiedPaths";
+            [Serializable] public class PathList
             {
-                var scriptsChanged = importedAssets
-                    .Concat(movedAssets)
-                    .Concat(deletedAssets)
-                    .Any(x=> x.EndsWith(".cs") || x.EndsWith(".js"));
-
-                EditorPrefs.SetBool("ResourceSingletonBuilder.scriptsChanged", scriptsChanged);
+                public string[] values;
+            } 
+            static string[] ModifiedPaths
+            {
+                set
+                {
+                    var json = JsonUtility.ToJson(new PathList {values = value});
+                    EditorPrefs.SetString(EDITORPREFS_KEY_ModifiedPaths,json);
+                }
+                get
+                {
+                    var json = EditorPrefs.GetString(EDITORPREFS_KEY_ModifiedPaths);
+                    var data = JsonUtility.FromJson<PathList>(json);
+                    return data?.values != null ? data.values:new string[0];
+                }
             }
+
+            static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets,
+                string[] movedFromAssetPaths)
+            {
+                ModifiedPaths = importedAssets
+                    .Concat(movedAssets)
+                    .Where(x => AssetImporter.GetAtPath(x) as MonoImporter)
+                    .ToArray();
+            }
+            
+            [DidReloadScripts(-100)]
+            public static void OnScriptsReloaded()
+            {
+                var modifiedPaths = ModifiedPaths;
+                if (modifiedPaths.Length == 0) return;
+                
+                BuildResourceSingletons(modifiedPaths);
+                ModifiedPaths = new string[0];
+            } 
         }
 
-        [DidReloadScripts(-100)]
-        public static void BuildResourceSingletonsIfDirty()
-        {
-            if(s_hasRun)
-            {
-                return; 
-            } 
-         
-            if (!BuildPipeline.isBuildingPlayer && !EditorPrefs.GetBool("ResourceSingletonBuilder.scriptsChanged", true))
-            {
-                return;
-            }
-
-            BuildResourceSingletons();
-        } 
-        
-        public static void BuildResourceSingletons()
+        public static void BuildResourceSingletons(string[] modifiedPaths)
         {
 #if LOG_DEBUG
 	    Debug.Log("Building ResourceSingeltons");
 #endif	    
-            var result = AssetDatabase.FindAssets("t:script")
+            var modifiedSingletonClasses = modifiedPaths
                 .Select(x=>
                 {
                     var script = AssetDatabase.LoadAssetAtPath<MonoScript>(AssetDatabase.GUIDToAssetPath(x));
@@ -208,18 +222,16 @@ namespace Cratesmith.Utils
 
             if (EditorApplication.isPlayingOrWillChangePlaymode || BuildPipeline.isBuildingPlayer)
             {
-                foreach(var i in result)
+                foreach(var i in modifiedSingletonClasses)
                 {  
                     BuildOrMoveAsset(i);
                 }
             }
             else
             {
-                s_stepQueue = new Queue<System.Type>(result);
+                s_stepQueue = new Queue<Type>(modifiedSingletonClasses);
                 EditorApplication.delayCall += BuildResourceSingletons_Step;
             }
-
-            s_hasRun = true;
         }
 
         private static void BuildResourceSingletons_Step()
@@ -270,7 +282,7 @@ namespace Cratesmith.Utils
         public static UnityEngine.Object BuildOrMoveAsset(Type type) 
         {
 #if LOG_DEBUG
-	    Debug.Log("Building ResourceSingleton: " + type.FullName);
+	        Debug.Log("Building ResourceSingleton: " + type.FullName);
 #endif
             var editorPrefsKey = "ResourceSingleton.PrevFilename." + type.FullName;
             var resourceFilename = ResourceFilenameAttribute.Get(type);
@@ -325,9 +337,10 @@ namespace Cratesmith.Utils
                 AssetDatabase.ImportAsset(assetPath,ImportAssetOptions.ForceSynchronousImport);
                 instance = AssetDatabase.LoadAssetAtPath(assetPath, type) as ResourceSingletonBase;
             }
-	
+            
             if (instance)
             {			
+                type.GetField("s_instance", BindingFlags.NonPublic|BindingFlags.Static).SetValue(null, instance);
                 instance.OnRebuildInEditor();            
             }
 

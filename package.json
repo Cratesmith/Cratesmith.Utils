@@ -2,7 +2,7 @@
 	"name": "com.cratesmith.utils",
 	"displayName": "Cratesmith.Utils",
 	"description": "Shared code used by most other packages.",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"unity": "2018.3",
 	"license": "MIT",
 	"repository": {
@@ -12,5 +12,6 @@
 	"src": "Packages/Cratesmith.Utils",
 	"author": "Kieran Lord <cratesmith@cratesmith.com> (https://github.com/cratesmith)",
 	"dependencies": {
+		"com.cratesmith.collections": "0.0.1"
 	}
 }

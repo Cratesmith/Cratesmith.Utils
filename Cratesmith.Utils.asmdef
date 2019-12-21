@@ -1,7 +1,8 @@
 {
     "name": "Cratesmith.Utils",
-    "references": [],
-    "optionalUnityReferences": [],
+    "references": [
+        "GUID:a97d4cedd0b8ef44990a55a4bcd2668e"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

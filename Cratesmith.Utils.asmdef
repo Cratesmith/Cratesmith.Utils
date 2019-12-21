@@ -1,7 +1,7 @@
 {
     "name": "Cratesmith.Utils",
     "references": [
-        "GUID:a97d4cedd0b8ef44990a55a4bcd2668e"
+        "Cratesmith.Collections"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

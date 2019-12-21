@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Cratesmith.Utils
@@ -10,20 +11,17 @@ namespace Cratesmith.Utils
         {
             get 
             {
-                if(!isCached)
+                if(EqualityComparer<T>.Default.Equals(m_owner, default(T)))
                 {
-                    m_owner = FindOwner();
-//                Assert.IsTrue(isCached, string.Format("Subcomponent<{0}> {1} does not have an owner!", typeof(T), name));
+                    m_owner = GetComponentInParent<T>(); 
                 }
                 return m_owner;
             }
         }
 
-        protected virtual T FindOwner()
+        protected virtual void OnDespawn()
         {
-            return GetComponentInParent<T>(); 
+            m_owner = default;
         }
-
-        private bool isCached { get { return !EqualityComparer<T>.Default.Equals(m_owner, default(T));  }}
     }
 }

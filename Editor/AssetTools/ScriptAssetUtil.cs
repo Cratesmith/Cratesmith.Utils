@@ -144,8 +144,6 @@ namespace Cratesmith.Utils
             var dirInfo = new DirectoryInfo(startDir);
             while (dirInfo!=null && dirInfo != assetsDir)
             {
-                dirInfo = dirInfo.Parent;
-
                 var existingScriptDir = dirInfo.GetDirectories().FirstOrDefault(x => x.Name.ToLower() == "scripts");
                 if (existingScriptDir != null)
                 {
@@ -158,6 +156,8 @@ namespace Cratesmith.Utils
                     dirInfo = dirInfo.Parent.CreateSubdirectory("Scripts");
                     break;
                 }
+
+                dirInfo = dirInfo.Parent;
             }
 
             if (dirInfo == null || dirInfo == assetsDir)

@@ -8,6 +8,18 @@ namespace Cratesmith.Utils
         public delegate float WeightFunction<T>(T value);
         public delegate float WeightFunctionIndexed<T>(T value, int i);
 	
+	    // shuffle this list
+        public static void Shuffle<T>(this IList<T> @this, System.Random random = null)
+        {
+            for (int i = 0; i < @this.Count; i++)
+            {
+                int ib = random!=null ? random.Next(@this.Count):UnityEngine.Random.Range(0, @this.Count);
+                var temp = @this[ib];
+                @this[ib] = @this[i];
+                @this[i] = temp;
+            }
+        }
+	
         /// Get a random item from the list.
         /// Random is sampled once. If random is null, UnityEngine.Random will be used
         public static T Random<T>(this IList<T> @this, System.Random random = null) 
